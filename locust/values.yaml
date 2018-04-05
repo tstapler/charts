@@ -1,0 +1,11 @@
+# Default values for locust.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: tstapler/locust-tasks
+  tag: latest
+  pullPolicy: Always
+resources: {}
+workerReplicas: 10
+targetUrl: https://fakeurl.this.doesnt.exist.com
