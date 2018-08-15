@@ -1,0 +1,84 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "plex.fullname" . }}
+  labels:
+    app: {{ template "plex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "plex.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+{{- if .Values.deployment_pod_spec }}
+{{ toYaml .Values.deployment_pod_spec | indent 6 }}
+{{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: TZ
+            value: {{ .Values.tz | quote}}
+          {{- if .Values.advertiseIp }}
+          - name: ADVERTISE_IP
+            value: {{ .Values.advertiseIp | quote }}
+          {{- end }}
+          {{- if .Values.plexUid }}
+          - name: PLEX_UID
+            value: {{ .Values.plexUid | quote }}
+          {{- end }}
+          {{- if .Values.plexGid }}
+          - name: PLEX_GID
+            value: {{ .Values.plexGid | quote }}
+          {{- end }}
+          {{- if .Values.plexClaim }}
+          - name: PLEX_CLAIM
+            value: {{ .Values.plexClaim | quote }}
+          {{- end }}
+          {{- if .Values.allowedNetworks }}
+          - name: ALLOWED_NETWORKS
+            value: {{ .Values.allowedNetworks }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 32400
+              protocol: TCP
+            {{- range $number, $port := tuple "3005" "8324" "32469"}}
+            - name: tcp{{$number}}
+              containerPort: 3005
+              protocol: TCP
+            {{- end}}
+            {{- range $number, $port := tuple "1900" "32410" "32412" "32413" "32414"}}
+            - name: udp{{$number}}
+              containerPort: {{$port}}
+              protocol: UDP
+            {{- end }}
+          # Healthcheck taken from dockerfile
+          # https://github.com/plexinc/pms-docker/blob/master/Dockerfile#L57
+          livenessProbe:
+            exec:
+              command:
+                - /healthcheck.sh
+            initialDelaySeconds: 20
+            periodSeconds: 200
+            timeoutSeconds: 100
+          readinessProbe:
+            httpGet:
+              path: /web/index.html
+              port: 32400
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+            periodSeconds: 15
+          volumeMounts: 
+{{ toYaml .Values.volumeMounts | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:  
+{{ toYaml .Values.volumes | indent 6 }}

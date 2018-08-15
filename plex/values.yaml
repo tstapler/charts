@@ -1,0 +1,67 @@
+# Default values for plex.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: plexinc/pms-docker
+  tag: public
+  pullPolicy: Always
+service:
+  name: plex
+  type: NodePort
+  externalPort: 32400
+  internalPort: 32400
+
+plexClaim: claim-something # A plex claim generated from plex.tv
+
+# Add affinities and node selectors to the deployment spec
+# deployment_spec:
+  # nodeAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 1
+  #       preference:
+  #         matchExpressions:
+  #         - key: kubernetes.io/hostname
+  #           operator: In
+  #           values:
+  #           - leviathan
+
+nodePort: 32400
+serviceType: NodePort
+
+# The timezone of your server
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+tz: America/Chicago
+
+ingress:
+  enabled: true
+  hosts:
+    - plex.staplerstation.com
+
+volumeMounts:
+  # Plex config contains your plex configuration data
+  - mountPath: "/config"
+    name: "plex-config"
+  # Place folders you'd like to use
+  - mountPath: "/data/movies"
+    name: "plex-movies"
+  # - mountPath: "/data/tv"
+  #   name: "plex-tv"
+  # - mountPath: "/data/music"
+  #   name: "plex-music"
+volumes:
+  - name: plex-config
+    hostPath:
+      # directory location on host
+      path: /data
+  - name: plex-movies
+    hostPath:
+      # directory location on host
+      path: /data
+  # - name: plex-tv
+  #   hostPath:
+  #     # directory location on host
+  #     path: /data
+  # - name: plex-music
+  #   hostPath:
+  #     # directory location on host
+  #     path: /data
