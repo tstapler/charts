@@ -1,0 +1,99 @@
+# Default values for media-master.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+userId: 1000
+replicaCount: 1
+timezone: America/Chicago
+
+sonarr:
+  internalPort: 8989
+  name: sonarr
+  image:
+    repository: linuxserver/sonarr
+    tag: latest
+    pullPolicy: Always
+  volumeMounts:
+    - mountPath: "/config"
+      name: "sonarr-config"
+    - mountPath: "/tv"
+      name: "television-library"
+    - mountPath: "/downloads"
+      name: "torrent-downloads"
+
+radarr:
+  name: radarr
+  internalPort: 7878
+  image:
+    repository: linuxserver/radarr
+    tag: latest
+    pullPolicy: Always
+  volumeMounts:
+    - mountPath: "/config"
+      name: "radarr-config"
+    - mountPath: "/movies"
+      name: "movie-library"
+    - mountPath: "/downloads"
+      name: "torrent-downloads"
+  resources: {}
+
+transmission_ovpn:
+  name: transmission-ovpn
+  internalPort: 9091
+  # Transmision needs net_admin to use the tun interface
+  net_admin: true
+  image:
+    repository: haugene/transmission-openvpn
+    tag: latest
+    pullPolicy: Always
+  env:
+    OPENVPN_PROVIDER: PIA
+    OPENVPN_CONFIG: Netherlands
+    OPENVPN_USERNAME: p0000000 # Enter your username
+    OPENVPN_PASSWORD: password # Enter your password
+    LOCAL_NETWORK: 10.233.0.0/18
+    TRANSMISSION_RATIO_LIMIT: "2"
+    TRANSMISSION_RATIO_LIMIT_ENABLED: "true"
+  volumeMounts:
+    - mountPath: "/data"
+      name: "torrent-downloads"
+  resources: {}
+
+jackett:
+  name: jackett
+  internalPort: 9117
+  image:
+    repository: linuxserver/jackett
+    tag: latest
+    pullPolicy: Always
+  volumeMounts:
+    - mountPath: "/config"
+      name: "jackett-config"
+    - mountPath: "/downloads"
+      name: "torrent-downloads"
+  # Jackett has a memory leak this limit prevents it from killing the host
+  resources:
+    limits:
+      memory: "4Gi"
+      cpu: .5
+volumes:
+  - name: sonarr-config
+    hostPath:
+      path: "/data"
+  - name: television-library
+    hostPath:
+      path: "/data"
+  - name: radarr-config
+    hostPath:
+      path: "/data"
+  - name: movie-library
+    hostPath:
+      path: "/data"
+  - name: jackett-config
+    hostPath:
+      path: "/data"
+  - name: torrent-downloads
+    hostPath:
+      path: "/data"
+  - name: dev-net-tun
+    hostPath:
+      path: /dev/net/tun

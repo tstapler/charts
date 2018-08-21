@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "media-master.fullname" . }}
+  labels:
+{{ include "media-master.labels" . | indent 4 }}
+spec:
+  strategy:
+      type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ template "media-master.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+{{ range tuple .Values.radarr .Values.sonarr .Values.jackett .Values.transmission_ovpn }}
+        # Start {{ .name }}
+        - name: {{ .name }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
+          ports:
+            - containerPort: {{ .internalPort }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .internalPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: {{ .internalPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          {{- if .net_admin}}
+          # Add net_admin for VPN to use TUN
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+          {{- end }}
+          volumeMounts:
+{{ toYaml .volumeMounts | indent 12 }}
+          env:
+          {{- if $.Values.timezone }}
+          - name: TZ
+            value: {{ $.Values.timezone }}
+          {{- end}}
+          {{- if $.Values.userId }}
+          - name: PGID
+            value: {{ $.Values.userId | quote }}
+          - name: PUID
+            value: {{ $.Values.userId | quote }}
+          {{- end }}
+          {{- if .env}}
+            {{- range $key, $value := .env}}
+          - name: "{{$key}}"
+            value: "{{ $value }}"
+            {{- end}}
+          {{- end}}
+{{- if .resources }}
+          resources:
+{{ toYaml .resources | indent 12 }}
+{{- end }}
+        # End {{ .name }}
+{{end}}
