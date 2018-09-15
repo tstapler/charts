@@ -64,3 +64,5 @@ spec:
 {{- end }}
         # End {{ .name }}
 {{end}}
+      volumes:
+{{ toYaml .Values.volumes | indent 8 }}
