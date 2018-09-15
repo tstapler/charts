@@ -75,7 +75,12 @@ jackett:
     limits:
       memory: "4Gi"
       cpu: .5
+
 volumes:
+  - name: dev-net-tun
+    hostPath:
+      path: /dev/net/tun
+# TODO: You will need to configure these host paths before the chart will work
   - name: sonarr-config
     hostPath:
       path: "/data"
@@ -94,6 +99,3 @@ volumes:
   - name: torrent-downloads
     hostPath:
       path: "/data"
-  - name: dev-net-tun
-    hostPath:
-      path: /dev/net/tun
