@@ -48,6 +48,12 @@ volumeMounts:
   #   name: "plex-tv"
   # - mountPath: "/data/music"
   #   name: "plex-music"
+resources:
+  requests:
+    memory: 2Gi
+    cpu: 2
+  limits:
+    memory: 4Gi
 volumes:
   - name: plex-config
     hostPath:
