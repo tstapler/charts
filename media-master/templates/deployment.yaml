@@ -21,16 +21,28 @@ spec:
           imagePullPolicy: {{ .image.pullPolicy }}
           ports:
             - containerPort: {{ .internalPort }}
+          {{ if .readinessProbe }}
+          readinessProbe:
+{{ toYaml .readinessProbe | indent 12 }}
+          {{ else }}
           readinessProbe:
             tcpSocket:
               port: {{ .internalPort }}
             initialDelaySeconds: 5
             periodSeconds: 10
+            failureThreshold: 5
+          {{ end }}
+          {{ if .livenessProbe }}
+          livenessProbe:
+{{ toYaml .livenessProbe | indent 12 }}
+          {{ else }}
           livenessProbe:
             tcpSocket:
               port: {{ .internalPort }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 120
             periodSeconds: 20
+            failureThreshold: 3
+          {{- end }}
           {{- if .net_admin}}
           # Add net_admin for VPN to use TUN
           securityContext:

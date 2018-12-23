@@ -19,6 +19,12 @@ sonarr:
       name: "television-library"
     - mountPath: "/downloads"
       name: "torrent-downloads"
+  resources:
+    requests:
+      cpu: .5 
+      memory: 500Mi
+    limits:
+      memory: 1Gi
 
 radarr:
   name: radarr
@@ -34,7 +40,12 @@ radarr:
       name: "movie-library"
     - mountPath: "/downloads"
       name: "torrent-downloads"
-  resources: {}
+  resources:
+    requests:
+      cpu: .5 
+      memory: 500Mi
+    limits:
+      memory: 1Gi
 
 transmission_ovpn:
   name: transmission-ovpn
@@ -56,7 +67,12 @@ transmission_ovpn:
   volumeMounts:
     - mountPath: "/data"
       name: "torrent-downloads"
-  resources: {}
+  resources:
+    requests:
+      cpu: 1
+      memory: 500Mi
+    limits:
+      memory: 1Gi
 
 jackett:
   name: jackett
@@ -72,9 +88,12 @@ jackett:
       name: "torrent-downloads"
   # Jackett has a memory leak this limit prevents it from killing the host
   resources:
-    limits:
-      memory: "4Gi"
+    requests:
+      memory: "2Gi"
       cpu: .5
+    limits:
+      memory: "2Gi"
+      cpu: 1
 
 volumes:
   - name: dev-net-tun
