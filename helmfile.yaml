@@ -1,0 +1,116 @@
+repositories:
+  - name: stable
+    url: https://kubernetes-charts.storage.googleapis.com
+
+releases:
+  - name: metrics-server
+    chart: stable/metrics-server
+    version: ~2.0.4
+    values:
+      - args:
+        - --logtostderr
+        - --kubelet-preferred-address-types=InternalIP
+  - name: home-assistant
+    chart: stable/home-assistant
+    version: ~0.4.0
+    values:
+      - values/home-assistant_values.yaml
+  - name: media-master
+    chart: ./media-master
+    version: ~0.3.1
+    values:
+      - values/media-master_values.yaml
+  - name: prometheus
+    chart: stable/prometheus-operator
+    version: ~0.1.31
+    values:
+      - alertmanager:
+          requests:
+            memory: 400Mi
+          limits:
+            memory: 400Mi
+        prometheusOperator:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        prometheus:
+          requests:
+            memory: 400Mi
+          limits:
+            memory: 400Mi
+  - name: jenkins
+    chart: stable/jenkins
+    version: ~0.22.0
+    values:
+      - values/jenkins_values.yaml
+  - name: metallb
+    chart: stable/metallb
+    version: ~0.8.0
+    values:
+    - configInline:
+        address-pools:
+        - name: default
+          protocol: layer2
+          addresses:
+          - 192.168.1.220-192.168.1.240
+      controller:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      speaker:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        affinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "kubernetes.io/hostname"
+                  operator: In
+                  values: ["absis", "leviathan"]
+  - name: rabbitmq
+    chart: stable/rabbitmq-ha
+    version: ~1.14.0
+    values:
+      - values/rabbitmq_values.yaml
+      - prometheus:
+          enables: true
+        persistentVolume:
+          enabled: true
+          storageClass: cephfs
+          accessMode: ReadWriteMany
+          annotations: 
+            volume.beta.kubernetes.io/storage-class: "cephfs"
+        replicaCount: 1
+        resources:
+          requests:
+            cpu: .25
+            memory: 512Mi
+          limits:
+            cpu: .25
+            memory: 512Mi
+        rabbitmqMemoryHighWatermarkType: relative
+        rabbitmqMemoryHighWatermark: "0.9"
+        rabbitmqMQTTPlugin:
+          enabled: true
+        service:
+          type: LoadBalancer
+          clusterIP: "10.233.0.100"
+          loadBalancerIP: "192.168.1.222"
+        livenessProbe:
+          enabled: false
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            # Add to generate certificates for this ingress
+            kubernetes.io/tls-acme: 'true'
+            kubernetes.io/ssl-redirect: 'true'
+          tls: true
+          hostName: iot.staplerstation.com
+          tlsSecret: rabbitmq-tls-cert
