@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "netshoot.fullname" . }}
+  labels:
+    app: {{ template "netshoot.name" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "netshoot.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["sleep"]
+          args: ["10000000000"]
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
