@@ -54,7 +54,7 @@ transmission_ovpn:
   net_admin: true
   image:
     repository: haugene/transmission-openvpn
-    tag: latest
+    tag: 2.6
     pullPolicy: Always
   env:
     OPENVPN_PROVIDER: PIA
@@ -62,8 +62,6 @@ transmission_ovpn:
     OPENVPN_USERNAME: p0000000 # Enter your username
     OPENVPN_PASSWORD: password # Enter your password
     LOCAL_NETWORK: 10.233.0.0/18
-    TRANSMISSION_RATIO_LIMIT: "2"
-    TRANSMISSION_RATIO_LIMIT_ENABLED: "true"
   volumeMounts:
     - mountPath: "/data"
       name: "torrent-downloads"
