@@ -22,7 +22,7 @@ sonarr:
   resources:
     requests:
       cpu: .5 
-      memory: 500Mi
+      memory: 1Gi
     limits:
       memory: 1Gi
 
@@ -43,7 +43,7 @@ radarr:
   resources:
     requests:
       cpu: .5 
-      memory: 500Mi
+      memory: 1Gi
     limits:
       memory: 1Gi
 
@@ -67,10 +67,10 @@ transmission_ovpn:
       name: "torrent-downloads"
   resources:
     requests:
-      cpu: 1
-      memory: 500Mi
+      cpu: .25
+      memory: 256Mi
     limits:
-      memory: 1Gi
+      memory: 256Mi
 
 jackett:
   name: jackett
@@ -84,14 +84,12 @@ jackett:
       name: "jackett-config"
     - mountPath: "/downloads"
       name: "torrent-downloads"
-  # Jackett has a memory leak this limit prevents it from killing the host
   resources:
     requests:
-      memory: "2Gi"
+      memory: "500Mi"
       cpu: .5
     limits:
-      memory: "2Gi"
-      cpu: 1
+      memory: "1Gi"
 
 volumes:
   - name: dev-net-tun
