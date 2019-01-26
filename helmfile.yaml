@@ -48,6 +48,15 @@ releases:
             cpu: 100m
             memory: 100Mi
         prometheus:
+          prometheusSpec:
+            additionalScrapeConfigs:
+            - job_name: 'ceph'
+              honor_labels: true
+              static_configs:
+              - targets:  
+                - "10.0.0.1:9283"
+                - "10.0.0.3:9283"
+                labels: {}
           requests:
             memory: 400Mi
           limits:
