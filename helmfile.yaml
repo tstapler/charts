@@ -31,6 +31,31 @@ releases:
     version: ~0.3.1
     values:
       - values/media-master_values.yaml
+  - name: ftb-infinity
+    chart: stable/minecraft
+    version: ~0.3.2
+    values:
+      - securityContext:
+          # Security context settings
+          runAsUser: 0
+        minecraftServer:
+          eula: "TRUE"
+          type: "FTB"
+          version: "1.12.2"
+          ftbServerMod: https://www.feed-the-beast.com/projects/ftb-revelation/files/2658240
+          jvmOpts: "-Xmx4G -Xms4G"
+        resources:
+          requests:
+            memory: 4Gi
+            cpu: 1
+          limits:
+            memory: 4Gi
+            cpu: 1
+        persistence:
+          storageClass: cephfs
+          dataDir:
+            enabled: true
+            Size: 20Gi
   - name: prometheus
     chart: stable/prometheus-operator
     version: ~0.1.31
@@ -61,11 +86,6 @@ releases:
             memory: 400Mi
           limits:
             memory: 400Mi
-  - name: jenkins
-    chart: stable/jenkins
-    version: ~0.22.0
-    values:
-      - values/jenkins_values.yaml
   - name: metallb
     chart: stable/metallb
     version: ~0.8.0
