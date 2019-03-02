@@ -22,9 +22,9 @@ sonarr:
   resources:
     requests:
       cpu: .5 
-      memory: 1Gi
+      memory: 2Gi
     limits:
-      memory: 1Gi
+      memory: 2Gi
 
 radarr:
   name: radarr
@@ -43,9 +43,9 @@ radarr:
   resources:
     requests:
       cpu: .5 
-      memory: 1Gi
+      memory: 2Gi
     limits:
-      memory: 1Gi
+      memory: 2Gi
 
 transmission_ovpn:
   name: transmission-ovpn
@@ -68,9 +68,9 @@ transmission_ovpn:
   resources:
     requests:
       cpu: .25
-      memory: 256Mi
+      memory: 1Gi
     limits:
-      memory: 256Mi
+      memory: 1Gi
 
 jackett:
   name: jackett
@@ -86,7 +86,7 @@ jackett:
       name: "torrent-downloads"
   resources:
     requests:
-      memory: "500Mi"
+      memory: "1Gi"
       cpu: .5
     limits:
       memory: "1Gi"
