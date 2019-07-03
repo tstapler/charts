@@ -1,0 +1,19 @@
+{{- range $index, $container := tuple .Values.sonarr .Values.radarr .Values.jackett }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "media-master.fullname" $ }}-{{$container.name}}
+  labels:
+{{ include "media-master.labels" $ | indent 4  }}
+spec:
+  type: {{ $container.type }}
+  ports:
+    - port: 80
+      targetPort: {{ $container.internalPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "media-master.name" $ }}
+    release: {{ $.Release.Name }}
+{{- end }}

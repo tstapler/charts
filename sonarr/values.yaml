@@ -1,0 +1,47 @@
+userId: 1000
+replicaCount: 1
+timezone: America/Chicago
+
+internalPort: 8989
+name: sonarr
+image:
+  image:
+    # repository: linuxserver/sonarr
+    # Use this repo until this bug is fixed
+    # https://github.com/Sonarr/Sonarr/issues/2802
+    repository: gh0str1pp3r/sonarr
+    tag: latest
+    pullPolicy: Always
+volumeMounts:
+  - mountPath: "/config"
+    name: "sonarr-config"
+  - mountPath: "/tv"
+    name: "television-library"
+  - mountPath: "/downloads"
+    name: "torrent-downloads"
+resources:
+  requests:
+    cpu: .5 
+    memory: 2Gi
+  limits:
+    memory: 2Gi
+readinessProbe:
+  httpGet:
+    path: /
+    port: internal-port
+  initialDelaySeconds: 120
+  periodSeconds: 15
+volumes:
+  - name: dev-net-tun
+    hostPath:
+      path: /dev/net/tun
+# TODO: You will need to configure these host paths before the chart will work
+  - name: sonarr-config
+    hostPath:
+      path: "/data"
+  - name: television-library
+    hostPath:
+      path: "/data"
+  - name: torrent-downloads
+    hostPath:
+      path: "/data"

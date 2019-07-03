@@ -1,50 +1,47 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "media-master.fullname" . }}
+  name: {{ template "sonarr.fullname" . }}
   labels:
-{{ include "media-master.labels" . | indent 4 }}
+{{ include "sonarr.labels" . | indent 4 }}
 spec:
   strategy:
       type: Recreate
   template:
     metadata:
       labels:
-        app: {{ template "media-master.name" . }}
-        release: {{ .Release.Name }}
+        app: {{ template "sonarr.name" . }}
+        release: {{ .Values.Release.Name }}
     spec:
       containers:
-{{ range tuple .Values.radarr .Values.sonarr .Values.jackett .Values.transmission_ovpn }}
-        # Start {{ .name }}
-        - name: {{ .name }}
-          image: "{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: {{ .image.pullPolicy }}
+        - name: {{ .Values.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: internal-port
-              containerPort: {{ .internalPort }}
-          {{ if .readinessProbe }}
+            - containerPort: {{ .Values.internalPort }}
+          {{ if .Values.readinessProbe }}
           readinessProbe:
-{{ toYaml .readinessProbe | indent 12 }}
+{{ toYaml .Values.readinessProbe | indent 12 }}
           {{ else }}
           readinessProbe:
             tcpSocket:
-              port: {{ .internalPort }}
+              port: {{ .Values.internalPort }}
             initialDelaySeconds: 5
             periodSeconds: 10
             failureThreshold: 5
           {{ end }}
-          {{ if .livenessProbe }}
+          {{ if .Values.livenessProbe }}
           livenessProbe:
-{{ toYaml .livenessProbe | indent 12 }}
+{{ toYaml .Values.livenessProbe | indent 12 }}
           {{ else }}
           livenessProbe:
             tcpSocket:
-              port: {{ .internalPort }}
+              port: {{ .Values.internalPort }}
             initialDelaySeconds: 120
             periodSeconds: 20
             failureThreshold: 3
           {{- end }}
-          {{- if .net_admin}}
+          {{- if .Values.net_admin}}
           # Add net_admin for VPN to use TUN
           securityContext:
             privileged: true
@@ -53,7 +50,7 @@ spec:
                 - NET_ADMIN
           {{- end }}
           volumeMounts:
-{{ toYaml .volumeMounts | indent 12 }}
+{{ toYaml .Values.volumeMounts | indent 12 }}
           env:
           {{- if $.Values.timezone }}
           - name: TZ
@@ -65,17 +62,15 @@ spec:
           - name: PUID
             value: {{ $.Values.userId | quote }}
           {{- end }}
-          {{- if .env}}
-            {{- range $key, $value := .env}}
+          {{- if .Values.env}}
+            {{- range $key, $value := .Values.env}}
           - name: "{{$key}}"
             value: "{{ $value }}"
             {{- end}}
           {{- end}}
-{{- if .resources }}
+{{- if .Values.resources }}
           resources:
-{{ toYaml .resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
 {{- end }}
-        # End {{ .name }}
-{{end}}
       volumes:
-{{ toYaml .Values.volumes | indent 8 }}
+{{ toYaml .Values.Values.volumes | indent 8 }}
