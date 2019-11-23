@@ -37,19 +37,21 @@ releases:
     values:
       - securityContext:
           # Security context settings
+          # ceph's volume provisioner needs to be run as root right now
           runAsUser: 0
         minecraftServer:
           eula: "TRUE"
           type: "FTB"
           version: "1.12.2"
           ftbServerMod: https://www.feed-the-beast.com/projects/ftb-revelation/files/2658240
-          jvmOpts: "-Xmx4G -Xms4G"
+          jvmOpts: "-Xmx6G -Xms6G"
+          serviceType: "NodePort"
         resources:
           requests:
-            memory: 4Gi
+            memory: 6Gi
             cpu: 1
           limits:
-            memory: 4Gi
+            memory: 6Gi
             cpu: 1
         persistence:
           storageClass: cephfs
