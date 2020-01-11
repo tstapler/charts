@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "media-master.labels" . | indent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   strategy:
       type: Recreate
   template:
