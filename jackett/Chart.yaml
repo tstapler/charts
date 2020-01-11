@@ -1,4 +1,4 @@
 apiVersion: v1
-description: A Helm chart for Kubernetes
+description: Jackett - A proxy for applications like Sonarr, Radarr, SickRage, and CouchPotato.
 name: jackett
-version: 0.3.2
+version: 1.0.0

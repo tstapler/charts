@@ -4,6 +4,6 @@ In order to use this chart you'll need to configure the volumes which have a hos
 
 # Changelog
 
-## 0.1.0
+## 1.0.0
 
 Initial release after split from media-master chart
