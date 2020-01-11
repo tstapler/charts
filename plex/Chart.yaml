@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A chart for deploying plex (https://plex.tv) to kubernetes
 name: plex
-version: 0.3.1
+version: 0.3.2
