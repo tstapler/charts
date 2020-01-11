@@ -4,10 +4,6 @@ In order to use this chart you'll need to configure the volumes which have a hos
 
 # Changelog
 
-## 0.3.1
+## 0.1.0
 
-Add reverse proxy to make the services work behind `kubectl proxy`
-
-## 0.2.1
-
-Initial public release
+Initial release after split from media-master chart

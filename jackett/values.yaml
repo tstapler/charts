@@ -5,112 +5,25 @@ userId: 1000
 replicaCount: 1
 timezone: America/Chicago
 
-sonarr:
-  internalPort: 8989
-  name: sonarr
-  image:
-    repository: linuxserver/sonarr
-    tag: latest
-    pullPolicy: Always
-  volumeMounts:
-    - mountPath: "/config"
-      name: "sonarr-config"
-    - mountPath: "/tv"
-      name: "television-library"
-    - mountPath: "/downloads"
-      name: "torrent-downloads"
-  resources:
-    requests:
-      cpu: .5 
-      memory: 2Gi
-    limits:
-      memory: 2Gi
-
-radarr:
-  name: radarr
-  internalPort: 7878
-  image:
-    repository: linuxserver/radarr
-    tag: latest
-    pullPolicy: Always
-  volumeMounts:
-    - mountPath: "/config"
-      name: "radarr-config"
-    - mountPath: "/movies"
-      name: "movie-library"
-    - mountPath: "/downloads"
-      name: "torrent-downloads"
-  resources:
-    requests:
-      cpu: .5 
-      memory: 2Gi
-    limits:
-      memory: 2Gi
-
-transmission_ovpn:
-  name: transmission-ovpn
-  internalPort: 9091
-  # Transmision needs net_admin to use the tun interface
-  net_admin: true
-  image:
-    repository: haugene/transmission-openvpn
-    tag: 2.6
-    pullPolicy: Always
-  env:
-    OPENVPN_PROVIDER: PIA
-    OPENVPN_CONFIG: Netherlands
-    OPENVPN_USERNAME: p0000000 # Enter your username
-    OPENVPN_PASSWORD: password # Enter your password
-    LOCAL_NETWORK: 10.233.0.0/18
-  volumeMounts:
-    - mountPath: "/data"
-      name: "torrent-downloads"
-  resources:
-    requests:
-      cpu: .25
-      memory: 1Gi
-    limits:
-      memory: 1Gi
-
-jackett:
-  name: jackett
-  internalPort: 9117
-  image:
-    repository: linuxserver/jackett
-    tag: latest
-    pullPolicy: Always
-  volumeMounts:
-    - mountPath: "/config"
-      name: "jackett-config"
-    - mountPath: "/downloads"
-      name: "torrent-downloads"
-  resources:
-    requests:
-      memory: "1Gi"
-      cpu: .5
-    limits:
-      memory: "1Gi"
+name: jackett
+internalPort: 9117
+image:
+  repository: linuxserver/jackett
+  tag: latest
+  pullPolicy: Always
+volumeMounts:
+  - mountPath: "/config"
+    name: "jackett-config"
+  - mountPath: "/downloads"
+    name: "torrent-downloads"
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: .5
+  limits:
+    memory: "1Gi"
 
 volumes:
-  - name: dev-net-tun
-    hostPath:
-      path: /dev/net/tun
-# TODO: You will need to configure these host paths before the chart will work
-  - name: sonarr-config
-    hostPath:
-      path: "/data"
-  - name: television-library
-    hostPath:
-      path: "/data"
-  - name: radarr-config
-    hostPath:
-      path: "/data"
-  - name: movie-library
-    hostPath:
-      path: "/data"
   - name: jackett-config
-    hostPath:
-      path: "/data"
-  - name: torrent-downloads
     hostPath:
       path: "/data"

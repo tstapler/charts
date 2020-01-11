@@ -1,19 +1,17 @@
-{{- range $index, $container := tuple .Values.sonarr .Values.radarr .Values.jackett }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "radarr.fullname" $ }}-{{$container.name}}
+  name: {{ template "radarr.fullname" $ }}
   labels:
 {{ include "radarr.labels" $ | indent 4  }}
 spec:
-  type: {{ $container.type }}
+  type: {{ .Values.type }}
   ports:
     - port: 80
-      targetPort: {{ $container.internalPort }}
+      targetPort: {{ .Values.internalPort }}
       protocol: TCP
       name: http
   selector:
     app: {{ include "radarr.name" $ }}
     release: {{ $.Release.Name }}
-{{- end }}

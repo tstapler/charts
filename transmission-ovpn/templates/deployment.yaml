@@ -1,16 +1,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jackett.fullname" . }}
+  name: {{ template "transmission-ovpn.fullname" . }}
   labels:
-{{ include "jackett.labels" . | indent 4 }}
+{{ include "transmission-ovpn.labels" . | indent 4 }}
 spec:
   strategy:
       type: Recreate
   template:
     metadata:
       labels:
-        app: {{ template "jackett.name" . }}
+        app: {{ template "transmission-ovpn.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:

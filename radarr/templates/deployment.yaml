@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         app: {{ template "radarr.name" . }}
-        release: {{ .Values.Release.Name }}
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -73,4 +73,4 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
 {{- end }}
       volumes:
-{{ toYaml .Values.Values.volumes | indent 8 }}
+{{ toYaml .Values.volumes | indent 8 }}

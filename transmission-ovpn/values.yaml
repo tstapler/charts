@@ -1,0 +1,30 @@
+# Default values for transmission-ovpn.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+userId: 1000
+replicaCount: 1
+timezone: America/Chicago
+
+name: transmission-ovpn
+internalPort: 9091
+# Transmision needs net_admin to use the tun interface
+net_admin: true
+image:
+  repository: haugene/transmission-openvpn
+  tag: 2.6
+  pullPolicy: Always
+env:
+  OPENVPN_PROVIDER: PIA
+  OPENVPN_CONFIG: Netherlands
+  OPENVPN_USERNAME: p0000000 # Enter your username
+  OPENVPN_PASSWORD: password # Enter your password
+  LOCAL_NETWORK: 10.233.0.0/18
+volumeMounts:
+  - mountPath: "/data"
+    name: "torrent-downloads"
+resources:
+  requests:
+    cpu: .25
+    memory: 1Gi
+  limits:
+    memory: 1Gi
