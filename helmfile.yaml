@@ -1,7 +1,19 @@
 repositories:
   - name: stable
     url: https://kubernetes-charts.storage.googleapis.com
+  - name: kiwigrid
+    url: https://kiwigrid.github.io
+  - name: jetstack
+    url: https://charts.jetstack.io
+
 releases:
+  - name: cert-manager
+    chart: jetstack/cert-manager
+    version: ~0.12.0
+    namespace: cert-manager
+  - name: goldpinger
+    chart: stable/goldpinger
+    version: ~2.0.1
   - name: docker-gc
     chart: stable/spotify-docker-gc
     version: 0.3.0
@@ -21,16 +33,35 @@ releases:
           create: true
   - name: home-assistant
     chart: stable/home-assistant
-    version: ~0.5.1
+    version: ~0.10.0
     values:
-      - image:
-          tag: 0.86.2
       - values/home-assistant_values.yaml
   - name: media-master
     chart: ./media-master
     version: ~0.3.1
     values:
+      - replicaCount: 0
       - values/media-master_values.yaml
+  - name: transmission-ovpn
+    chart: ./transmission-ovpn
+    version: ~0.1.0
+    values:
+      - values/transmission-ovpn.yaml
+  - name: radarr
+    chart: ./radarr
+    version: ~0.1.0
+    values:
+      - values/radarr.yaml
+  - name: sonarr
+    chart: ./sonarr
+    version: ~0.1.0
+    values:
+      - values/sonarr.yaml
+  - name: jackett
+    chart: ./jackett
+    version: ~0.1.0
+    values:
+      - values/jackett.yaml
   - name: ftb-infinity
     chart: stable/minecraft
     version: ~0.3.2
@@ -58,9 +89,20 @@ releases:
           dataDir:
             enabled: true
             Size: 20Gi
+  - name: wobbling-crab
+    chart: ./ombi
+    version: ~0.1.0
+    values:
+      - values/ombi_values.yaml
+
+  - name: solemn-echidna
+    chart: ./plex
+    version: ~0.3.1
+    values:
+      - values/plex_values.yaml
   - name: prometheus
     chart: stable/prometheus-operator
-    version: ~0.1.31
+    version: ~8.5.3
     values:
       - alertmanager:
           requests:
@@ -84,13 +126,14 @@ releases:
                 - "10.0.0.1:9283"
                 - "10.0.0.3:9283"
                 labels: {}
-          requests:
-            memory: 400Mi
-          limits:
-            memory: 400Mi
+            resources:
+              requests:
+                memory: 1Gi
+              limits:
+                memory: 1Gi
   - name: metallb
     chart: stable/metallb
-    version: ~0.8.0
+    version: ~0.12.0
     values:
     - configInline:
         address-pools:
