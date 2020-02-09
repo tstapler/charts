@@ -14,9 +14,21 @@ releases:
   - name: goldpinger
     chart: stable/goldpinger
     version: ~2.0.1
+    values:
+      - resources:
+          limits:
+            memory: 50Mi
+          requests:
+            memory: 50Mi
   - name: docker-gc
     chart: stable/spotify-docker-gc
     version: 0.3.0
+    values:
+      - resources:
+          requests:
+            memory: 10Mi
+          limits:
+            memory: 10Mi
   - name: nginx-ingress
     chart: stable/nginx-ingress
     version: ~1.1.4
@@ -27,8 +39,23 @@ releases:
           nodeSelector:
             kubernetes.io/hostname: nimbus
           minAvailable: 0
+          resources:
+           limits:
+             memory: 400Mi
+           requests:
+             cpu: 100m
+             memory: 400Mi
         defaultBackend:
           minAvailable: 0
+          resources:
+            limits:
+              cpu: 10m
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
+          service:
+            omitClusterIP: true
         rbac:
           create: true
   - name: home-assistant
@@ -36,12 +63,6 @@ releases:
     version: ~0.10.0
     values:
       - values/home-assistant_values.yaml
-  - name: media-master
-    chart: ./media-master
-    version: ~0.3.1
-    values:
-      - replicaCount: 0
-      - values/media-master_values.yaml
   - name: transmission-ovpn
     chart: ./transmission-ovpn
     version: ~0.1.0
@@ -105,17 +126,19 @@ releases:
     version: ~8.5.3
     values:
       - alertmanager:
-          requests:
-            memory: 400Mi
-          limits:
-            memory: 400Mi
+          resources:
+            requests:
+              memory: 400Mi
+            limits:
+              memory: 400Mi
         prometheusOperator:
-          limits:
-            cpu: 200m
-            memory: 200Mi
-          requests:
-            cpu: 100m
-            memory: 100Mi
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
         prometheus:
           prometheusSpec:
             additionalScrapeConfigs:
@@ -131,6 +154,14 @@ releases:
                 memory: 1Gi
               limits:
                 memory: 1Gi
+        prometheus-node-exporter:
+          resources:
+            limits:
+              cpu: 200m
+              memory: 50Mi
+            requests:
+              cpu: 100m
+              memory: 30Mi
   - name: metallb
     chart: stable/metallb
     version: ~0.12.0
@@ -152,9 +183,10 @@ releases:
             cpu: 100m
             memory: 100Mi
         affinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                - key: "kubernetes.io/hostname"
-                  operator: In
-                  values: ["absis", "leviathan"]
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                  - key: "kubernetes.io/hostname"
+                    operator: In
+                    values: ["absis", "leviathan"]
