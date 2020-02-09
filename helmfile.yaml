@@ -141,6 +141,19 @@ releases:
               memory: 100Mi
         prometheus:
           prometheusSpec:
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              fsGroup: 0
+            retention: 12w
+            storageSpec:
+              volumeClaimTemplate:
+               spec:
+                 storageClassName: cephfs
+                 accessModes: ["ReadWriteMany"]
+                 resources:
+                   requests:
+                     storage: 100Gi
             additionalScrapeConfigs:
             - job_name: 'ceph'
               honor_labels: true
@@ -148,6 +161,7 @@ releases:
               - targets:  
                 - "10.0.0.1:9283"
                 - "10.0.0.3:9283"
+                - "10.0.0.6:9283"
                 labels: {}
             resources:
               requests:
@@ -162,6 +176,12 @@ releases:
             requests:
               cpu: 100m
               memory: 30Mi
+        grafana:
+          persistence:
+            enabled: true
+            size: 32Gi
+            accessMode: ReadWriteMany
+            storageClassName: "cephfs"
   - name: metallb
     chart: stable/metallb
     version: ~0.12.0
