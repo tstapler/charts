@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/ombi
-  tag: latest
+  tag: development
   pullPolicy: Always
 
 env:
