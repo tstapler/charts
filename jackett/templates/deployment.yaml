@@ -22,24 +22,10 @@ spec:
           {{ if .Values.readinessProbe }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
-          {{ else }}
-          readinessProbe:
-            tcpSocket:
-              port: {{ .Values.internalPort }}
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            failureThreshold: 5
           {{ end }}
           {{ if .Values.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
-          {{ else }}
-          livenessProbe:
-            tcpSocket:
-              port: {{ .Values.internalPort }}
-            initialDelaySeconds: 120
-            periodSeconds: 20
-            failureThreshold: 3
           {{- end }}
           {{- if .Values.net_admin}}
           # Add net_admin for VPN to use TUN
