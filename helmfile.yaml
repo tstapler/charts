@@ -65,8 +65,21 @@ releases:
           create: true
   - name: home-assistant
     chart: stable/home-assistant
-    version: ~0.10.0
+    version: ~0.12.6
     values:
+      - persistence:
+          enabled: true
+          size: 32Gi
+          accessMode: ReadWriteMany
+          storageClass: "cephfs"
+        nodeSelector:
+          kubernetes.io/hostname: leviathan
+        resources:
+          limits:
+           memory: 2Gi
+          requests:
+           cpu: 500m
+           memory: 2Gi
       - values/home-assistant_values.yaml
   - name: transmission-ovpn
     chart: ./transmission-ovpn
