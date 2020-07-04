@@ -5,6 +5,8 @@ repositories:
     url: https://kiwigrid.github.io
   - name: jetstack
     url: https://charts.jetstack.io
+  - name: loki
+    url: https://grafana.github.io/loki/charts
 
 releases:
   - name: cert-manager
@@ -177,11 +179,41 @@ releases:
               cpu: 100m
               memory: 30Mi
         grafana:
+          enabled: true
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+            hosts:
+              - graph.staplerstation.com
+            tls:
+            - hosts:
+               - graph.staplerstation.com
+              secretName: grafana-ingress
+          grafana.ini:
+            server:
+              domain: graph.staplerstation.com
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi
           persistence:
             enabled: true
             size: 32Gi
             accessMode: ReadWriteMany
             storageClassName: "cephfs"
+  - name: loki
+    chart: loki/loki-stack
+    version: 0.38.1
+    values:
+      - resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
   - name: metallb
     chart: stable/metallb
     version: ~0.12.0
