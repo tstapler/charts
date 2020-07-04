@@ -141,7 +141,7 @@ releases:
       - values/plex_values.yaml
   - name: prometheus
     chart: stable/prometheus-operator
-    version: ~8.5.3
+    version: ~8.15.6
     values:
       - alertmanager:
           resources:
@@ -176,16 +176,16 @@ releases:
             - job_name: 'ceph'
               honor_labels: true
               static_configs:
-              - targets:  
+              - targets:
                 - "10.0.0.1:9283"
                 - "10.0.0.3:9283"
                 - "10.0.0.6:9283"
-                labels: {}
+                labels: { "cluster": "stapler1" }
             resources:
               requests:
-                memory: 1Gi
+                memory: 5Gi
               limits:
-                memory: 1Gi
+                memory: 5Gi
         prometheus-node-exporter:
           resources:
             limits:
