@@ -22,6 +22,9 @@ releases:
             memory: 50Mi
           requests:
             memory: 50Mi
+        serviceMonitor:
+          enabled: true
+          namespace: default
   - name: docker-gc
     chart: stable/spotify-docker-gc
     version: 0.3.0
