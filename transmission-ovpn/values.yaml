@@ -29,9 +29,11 @@ env:
 volumeMounts:
   - mountPath: "/data"
     name: "torrent-downloads"
-resources:
-  requests:
-    cpu: .25
-    memory: 3Gi
-  limits:
-    memory: 3Gi
+
+# Resources for ~200 Torrents
+# resources:
+#   requests:
+#     cpu: .25
+#     memory: 3Gi
+#   limits:
+#     memory: 3Gi
