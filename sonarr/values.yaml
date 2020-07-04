@@ -8,6 +8,12 @@ image:
   repository: linuxserver/sonarr
   tag: latest
   pullPolicy: Always
+readinessProbe:
+  httpGet:
+    path: /
+    port: 8989
+  failureThreshold: 3
+  periodSeconds: 10
 volumeMounts:
   - mountPath: "/config"
     name: "sonarr-config"

@@ -7,6 +7,12 @@ timezone: America/Chicago
 
 name: radarr
 internalPort: 7878
+readinessProbe:
+  httpGet:
+    path: /
+    port: 7878
+  failureThreshold: 3
+  periodSeconds: 10
 image:
   repository: linuxserver/radarr
   tag: latest

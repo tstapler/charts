@@ -11,20 +11,27 @@ internalPort: 9091
 net_admin: true
 image:
   repository: haugene/transmission-openvpn
-  tag: 2.6
+  tag: "2.12"
   pullPolicy: Always
+readinessProbe:
+  tcpSocket:
+    port: 9091
+  initialDelaySeconds: 120
+  periodSeconds: 120
 env:
   OPENVPN_PROVIDER: PIA
   OPENVPN_CONFIG: Netherlands
   OPENVPN_USERNAME: p0000000 # Enter your username
   OPENVPN_PASSWORD: password # Enter your password
   LOCAL_NETWORK: 10.233.0.0/18
+  CREATE_TUN_DEVICE: true
+  DOCKER_LOG: true
 volumeMounts:
   - mountPath: "/data"
     name: "torrent-downloads"
 resources:
   requests:
     cpu: .25
-    memory: 1Gi
+    memory: 3Gi
   limits:
-    memory: 1Gi
+    memory: 3Gi

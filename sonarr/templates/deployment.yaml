@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "sonarr.fullname" . }}
@@ -7,6 +7,10 @@ metadata:
 spec:
   strategy:
       type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "sonarr.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -19,11 +23,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.internalPort }}
-          {{ if .Values.readinessProbe }}
+          {{- if .Values.readinessProbe }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
-          {{ end }}
-          {{ if .Values.livenessProbe }}
+          {{- end }}
+          {{- if .Values.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           {{- end }}

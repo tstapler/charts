@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   repository: linuxserver/ombi
-  tag: development
+  tag: latest
   pullPolicy: Always
 
 env:
@@ -41,6 +41,13 @@ volumeMounts:
   - name: myvolume
     mountPath: "/config"
     subPath: "configs/ombi"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 1Gi
+  limits:
+    memory: 1Gi
 
 nodeSelector: {}
 
