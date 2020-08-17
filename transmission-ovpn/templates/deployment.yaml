@@ -40,7 +40,11 @@ spec:
                 - NET_ADMIN
           {{- end }}
           volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+{{- if .Values.volumeMounts }}
 {{ toYaml .Values.volumeMounts | indent 12 }}
+{{- end }}
           env:
           {{- if $.Values.timezone }}
           - name: TZ
@@ -62,5 +66,11 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- end }}
-      volumes:
+      volumes: 
+        - name: scripts
+          configMap:
+            name: '{{ template "transmission-ovpn.fullname" . }}-scripts'
+            defaultMode: 0777
+{{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent 8 }}
+{{- end }}

@@ -26,6 +26,8 @@ env:
   LOCAL_NETWORK: 10.233.0.0/18
   CREATE_TUN_DEVICE: true
   DOCKER_LOG: true
+  TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED: true
+  TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME: /scripts/unrar.sh
 volumeMounts:
   - mountPath: "/data"
     name: "torrent-downloads"
