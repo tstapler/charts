@@ -3,10 +3,18 @@ repositories:
     url: https://kubernetes-charts.storage.googleapis.com
   - name: kiwigrid
     url: https://kiwigrid.github.io
+  - name: pingcap
+    url: http://charts.pingcap.org
   - name: jetstack
     url: https://charts.jetstack.io
   - name: loki
     url: https://grafana.github.io/loki/charts
+  - name: itzg
+    url: https://itzg.github.io/minecraft-server-charts/
+  - name: billimek
+    url: https://billimek.com/billimek-charts
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
 
 releases:
   - name: cert-manager
@@ -230,6 +238,31 @@ releases:
           requests:
             cpu: 100m
             memory: 128Mi
+  - name: tidb-operator
+    chart: pingcap/tidb-operator
+    version: 1.1.3
+    namespace: pingcap
+  - name: tidb-cluster
+    chart: pingcap/tidb-cluster
+    version: 1.1.3
+    namespace: pingcap
+    values:
+    - tidb:
+        passwordSecretName: tidb-secret
+        config: |
+          [log]
+          level = "info"
+        initSql: |-
+          CREATE DATABASE zoneminder;
+          GRANT ALL PRIVILEGES ON zoneminder.* TO 'developer'@'%';
+      pd:
+        storageClassName: cephfs
+        resources:
+          storage: 20Gi
+      monitor:
+        storageClassName: cephfs
+      tikv:
+        storageClassName: cephfs
   - name: metallb
     chart: stable/metallb
     version: ~0.12.0
