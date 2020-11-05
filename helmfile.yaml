@@ -15,6 +15,8 @@ repositories:
     url: https://billimek.com/billimek-charts
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
+  - name: presslabs
+    url: https://presslabs.github.io/charts
 
 releases:
   - name: cert-manager
@@ -52,6 +54,10 @@ releases:
           nodeSelector:
             kubernetes.io/hostname: nimbus
           minAvailable: 0
+          tolerations:
+            - key: cloud
+              operator: Exists
+              effect: NoSchedule
           resources:
            limits:
              memory: 400Mi
@@ -96,27 +102,33 @@ releases:
       - values/home-assistant_values.yaml
   - name: transmission-ovpn
     chart: ./transmission-ovpn
-    version: ~0.1.0
+    version: ~1.0
     values:
+      - resources:
+          requests:
+            cpu: .25
+            memory: 5Gi
+          limits:
+            memory: 5Gi
       - values/transmission-ovpn.yaml
   - name: radarr
     chart: ./radarr
-    version: ~0.1.0
+    version: ~1.0
     values:
       - values/radarr.yaml
   - name: sonarr
     chart: ./sonarr
-    version: ~0.1.0
+    version: ~1.0
     values:
       - values/sonarr.yaml
   - name: jackett
     chart: ./jackett
-    version: ~0.1.0
+    version: ~1.0
     values:
       - values/jackett.yaml
   - name: ftb-infinity
-    chart: stable/minecraft
-    version: ~0.3.2
+    chart: itzg/minecraft
+    version: ~2.0.4
     values:
       - securityContext:
           # Security context settings
@@ -129,13 +141,16 @@ releases:
           ftbServerMod: https://www.feed-the-beast.com/projects/ftb-revelation/files/2658240
           jvmOpts: "-Xmx6G -Xms6G"
           serviceType: "NodePort"
+          memory: "6G"
         resources:
           requests:
-            memory: 6Gi
+            memory: 8Gi
             cpu: 1
           limits:
-            memory: 6Gi
+            memory: 8Gi
             cpu: 1
+        livenessProbe:
+          initialDelaySeconds: 500
         persistence:
           storageClass: cephfs
           dataDir:
@@ -146,7 +161,6 @@ releases:
     version: ~0.1.0
     values:
       - values/ombi_values.yaml
-
   - name: solemn-echidna
     chart: ./plex
     version: ~0.3.1
@@ -157,11 +171,20 @@ releases:
     version: ~8.15.6
     values:
       - alertmanager:
-          resources:
-            requests:
-              memory: 400Mi
-            limits:
-              memory: 400Mi
+          alertmanagerSpec:
+            resources:
+              requests:
+                memory: 400Mi
+              limits:
+                memory: 400Mi
+            storageSpec:
+              volumeClaimTemplate:
+               spec:
+                 storageClassName: cephfs
+                 accessModes: ["ReadWriteMany"]
+                 resources:
+                   requests:
+                     storage: 5Gi
         prometheusOperator:
           resources:
             limits:
@@ -185,6 +208,7 @@ releases:
                  resources:
                    requests:
                      storage: 100Gi
+            serviceMonitorSelectorNilUsesHelmValues: false
             additionalScrapeConfigs:
             - job_name: 'ceph'
               honor_labels: true
@@ -217,7 +241,7 @@ releases:
               - graph.staplerstation.com
             tls:
             - hosts:
-               - graph.staplerstation.com
+                - graph.staplerstation.com
               secretName: grafana-ingress
           grafana.ini:
             server:
@@ -243,31 +267,32 @@ releases:
           requests:
             cpu: 100m
             memory: 128Mi
-  - name: tidb-operator
-    chart: pingcap/tidb-operator
-    version: 1.1.3
-    namespace: pingcap
-  - name: tidb-cluster
-    chart: pingcap/tidb-cluster
-    version: 1.1.3
-    namespace: pingcap
+  - name: unifi-exporter
+    chart: ./unifi-exporter
+    version: ~0.1.0
     values:
-    - tidb:
-        passwordSecretName: tidb-secret
-        config: |
-          [log]
-          level = "info"
-        initSql: |-
-          CREATE DATABASE zoneminder;
-          GRANT ALL PRIVILEGES ON zoneminder.* TO 'developer'@'%';
-      pd:
-        storageClassName: cephfs
-        resources:
-          storage: 20Gi
-      monitor:
-        storageClassName: cephfs
-      tikv:
-        storageClassName: cephfs
+      - config:
+          listen:
+            address: :9130
+            metricspath: /metrics
+      - values/unifi_exporter.yaml
+  - name: zoneminder
+    chart: ./zoneminder
+    version: ~0.1.0
+    values:
+      - resources:
+          requests:
+            memory: 2Gi
+            cpu: 2
+          limits:
+            memory: 2Gi
+        extraEnv:
+          ZM_DB_HOST: tidb-cluster-tidb.pingcap
+          ZM_DB_NAME: zoneminder
+          ZM_DB_PORT: 4000
+        service:
+          type: LoadBalancer
+      - values/zoneminder_values.yaml
   - name: metallb
     chart: stable/metallb
     version: ~0.12.0
@@ -295,4 +320,4 @@ releases:
                 - matchExpressions:
                   - key: "kubernetes.io/hostname"
                     operator: In
-                    values: ["absis", "leviathan"]
+                    values: ["absis", "leviathan", "smicro1"]
