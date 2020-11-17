@@ -1,0 +1,2 @@
+FROM ubuntu:20.04
+RUN apt-get update && apt-get install -y lsb-release libgl1-mesa-dev libglu1 libgl1 libglu1-mesa libsdl2-2.0-0 libglvnd0 libglx0 libstdc++6 libasound2 libpulse0 libx11-6 libxext6 libxcursor1 libxinerama1 libxi6 libxrandr2 libxss1 libxxf86vm1 libwayland-egl1 libwayland-client0 libwayland-cursor0 libxkbcommon0 libpulse0 libxcb1 libxrender1 libxfixes3 libffi7 libwrap0 libsndfile1 libasyncns0 libxau6 libxdmcp6 liblz4-1 libgcrypt20 libflac8 libogg0 libvorbis0a libvorbisenc2 libbsd0

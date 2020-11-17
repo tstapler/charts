@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "dominions5.fullname" . }}
+  labels:
+    app: {{ template "dominions5.name" . }}
+    chart: {{ template "dominions5.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "dominions5.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dominions5.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/opt/dominions5/dom5.sh"]
+          env:
+            - name: DOM5_CONF
+              value: "/opt/dominions5"
+          args:
+            - --tcpserver
+            - --port 
+            - "{{ .Values.port }}"
+{{ toYaml .Values.gameArgs | indent 12 }}
+            - '{{ required "A value for .Values.gameName is required" .Values.gameName }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: "/opt/dominions5"
+              name: "game"
+        {{- if .Values.discordSidecar.enabled }}
+        - name: dom5-helper
+          image: "{{ .Values.discordSidecar.image.repository }}:{{ .Values.discordSidecar.image.tag }}"
+          env:
+            - name: DOM5_SCORES_FILE
+              value: "/opt/dominions5/savedgames/{{ .Values.gameName }}/scores.html"
+            - name: DISCORD_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "dominions5.fullname" . }}
+                  key: DISCORD_BOT_TOKEN
+            - name: DISCORD_CHANNEL
+              value: '{{ required "A value for .Values.discordSidecar.channel is required" .Values.discordSidecar.channel }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.discordSidecar.resources | indent 12 }}
+          volumeMounts:
+            - mountPath: "/opt/dominions5"
+              name: "game"
+          {{ end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+{{ toYaml .Values.gameVolumes | indent 8 }}
