@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "zoneminder.fullname" . }}
+  labels:
+    {{- include "zoneminder.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: zoneminder
+      protocol: TCP
+      name: https
+    - port: 9000
+      targetPort: notification
+      protocol: TCP
+      name: notification
+  selector:
+    {{- include "zoneminder.selectorLabels" . | nindent 4 }}
