@@ -11,11 +11,12 @@ internalPort: 9091
 net_admin: true
 image:
   repository: haugene/transmission-openvpn
-  tag: "2.12"
+  tag: "3.1"
   pullPolicy: Always
 readinessProbe:
-  tcpSocket:
-    port: 9091
+  exec:
+    command:
+      - /etc/scripts/healthcheck.sh
   initialDelaySeconds: 120
   periodSeconds: 120
 env:
@@ -23,6 +24,7 @@ env:
   OPENVPN_CONFIG: Netherlands
   OPENVPN_USERNAME: p0000000 # Enter your username
   OPENVPN_PASSWORD: password # Enter your password
+  PIA_OPENVPN_CONFIG_BUNDLE: openvpn
   LOCAL_NETWORK: 10.233.0.0/18
   CREATE_TUN_DEVICE: true
   DOCKER_LOG: true

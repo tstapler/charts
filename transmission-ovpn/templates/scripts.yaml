@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "transmission-ovpn.fullname" . }}-scripts
+data:
+  unrar.sh: |
+    #!/usr/bin/env sh
+    # Unrar the files in the directory (Don't overwrite existing files)
+    find /$TR_TORRENT_DIR/$TR_TORRENT_NAME -name "*.rar" -exec sh -c 'cd $(dirname {}) && unrar e -o- "{}"' \;
