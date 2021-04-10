@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "starbound.fullname" . }}
+  labels:
+    {{- include "starbound.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "starbound.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "starbound.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "starbound.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: chmod
+          image: busybox
+          command: [ "/bin/sh", "-c", "chmod 777 /data" ]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+
+        - name: steamcmd
+          image: steamcmd/steamcmd:latest
+          args:
+            - "+login $(STEAM_LOGIN)"
+            - "+force_install_dir /data"
+            - "+app_update $(STEAM_APPID)"
+            - "+quit"
+          env:
+            - name: STEAM_LOGIN
+              value: "$(STEAM_USERNAME) $(STEAM_PASSWORD)"
+              #value: "anonymous"
+            - name: STEAM_APPID
+              value: "211820" # Starbound
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          envFrom:
+            - secretRef:
+                name: {{ include "starbound.fullname" . }}-steam-creds
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi
+
+      containers:
+        - name: starbound
+          image: ubuntu:18.04
+          command: [ "/bin/bash", "-c", "/config/start.sh" ]
+          ports:
+            - containerPort: 21025
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/bin/bash", "-c", "kill -s INT 1" ]
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{ else }}
+            limits:
+              memory: 4Gi
+            requests:
+              memory: 4Gi
+          {{- end}}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "starbound.fullname" . }}
+        - name: config
+          configMap:
+            name: {{ include "starbound.fullname" . }}
+            defaultMode: 0744

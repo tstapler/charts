@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "starbound.fullname" . }}
+  labels:
+    {{- include "starbound.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 21025
+      targetPort: 21025
+      protocol: TCP
+      name: game
+  selector:
+    {{- include "starbound.selectorLabels" . | nindent 4 }}
