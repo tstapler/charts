@@ -2,7 +2,7 @@
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![AppVersion: 1.0](https://img.shields.io/badge/AppVersion-1.0-informational?style=flat-square)
 
-A Helm chart for Kubernetes
+A Helm chart for deploying a dominions5 server to Kubernetes. The included 'args_generator.py' script assists with setting the right values for a game of dominions.
 
 ## Values
 
