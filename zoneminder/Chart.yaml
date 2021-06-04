@@ -1,6 +1,8 @@
 apiVersion: v2
 name: zoneminder
-description: A Helm chart for Kubernetes
+description: >
+  A Helm chart for deploying Zoneminder on Kubernetes.
+  https://zoneminder.com/
 
 # A chart can be either an 'application' or a 'library' chart.
 #

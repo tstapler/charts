@@ -1,6 +1,8 @@
 apiVersion: v2
 name: unifi-exporter
-description: A Helm chart for Kubernetes
+description: >
+  A Helm chart deploying a prometheus exporter for Unifi.
+  https://hub.docker.com/r/jessestuart/unifi_exporter
 
 # A chart can be either an 'application' or a 'library' chart.
 #

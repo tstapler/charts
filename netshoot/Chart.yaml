@@ -1,4 +1,7 @@
 apiVersion: v1
-description: A Helm chart for Kubernetes
+description: >
+  A Helm Chart for deploying netshoot as a daemonset.
+  Netshoot is a Docker + Kubernetes network trouble-shooting swiss-army container.
+  https://github.com/nicolaka/netshoot
 name: netshoot
 version: 0.1.0
