@@ -21,12 +21,43 @@ repositories:
     url: https://presslabs.github.io/charts
   - name: descheduler
     url: https://kubernetes-sigs.github.io/descheduler/
+  - name: harbor
+    url: https://helm.goharbor.io
 
 releases:
   - name: cert-manager
     chart: jetstack/cert-manager
     version: ~0.12.0
     namespace: cert-manager
+  - name: harbor
+    chart: harbor/harbor
+    version: ~1.6.2
+    namespace: harbor
+    values:
+      - expose:
+          type: ingress
+          ingress:
+            hosts:
+              core: core.harbor.staplerstation.com
+              notary: notary.harbor.staplerstation.com
+            annotations:
+              certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+              cert-manager.io/cluster-issuer: letsencrypt-prod
+          tls:
+            certSource: secret
+            secret:
+              secretName: harbor-harbor-ingress-cert
+              notarySecretName: harbor-harbor-notary-ingress-cert
+        database:
+          internal:
+            image:
+              tag: v2.2.2
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+        externalURL: https://core.harbor.staplerstation.com
+      - values/harbor_values.yaml
   - name: descheduler
     chart: descheduler/descheduler
     version: ~0.19.0
