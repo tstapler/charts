@@ -119,8 +119,6 @@ releases:
         probes:
           liveness:
             enabled: false
-        # nodeSelector:
-        #   kubernetes.io/hostname: absis
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -176,7 +174,7 @@ releases:
       - values/plex_values.yaml
   - name: prometheus
     chart: prometheus-community/kube-prometheus-stack
-    version: ^9.4.10
+    version: ^27.2.1
     values:
       - alertmanager:
           alertmanagerSpec:
@@ -224,6 +222,7 @@ releases:
               - targets:
                 - "10.0.0.1:9283"
                 - "10.0.0.3:9283"
+                - "10.0.0.4:9283"
                 - "10.0.0.6:9283"
                 labels: { "cluster": "stapler1" }
             resources:
