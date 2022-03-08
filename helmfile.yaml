@@ -176,6 +176,9 @@ releases:
     version: ~1.0
     values:
       - values/jackett.yaml
+  - name: flaresolverr
+    chart: ./flaresolverr
+    version: ~0.1.0
   - name: wobbling-crab
     chart: ./ombi
     version: ~0.1.0
