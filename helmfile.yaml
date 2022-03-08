@@ -109,16 +109,27 @@ releases:
           create: true
   - name: home-assistant
     chart: k8s-at-home/home-assistant
-    version: ~1.0.5
+    version: ~12.0.1
     values:
       - persistence:
-          enabled: true
-          size: 32Gi
-          accessMode: ReadWriteMany
-          storageClass: "cephfs"
+          config:
+            enabled: true
+            size: 8Gi
+            retain: true
         probes:
           liveness:
             enabled: false
+        http:
+          server_host: 0.0.0.0
+          ip_ban_enabled: true
+          login_attempts_threshold: 5
+          use_x_forwarded_for: true
+          trusted_proxies:
+          # Pod CIDR
+          - 10.233.64.0/18
+          # Node CIDR
+          - 10.0.0.1/24
+        # Ingress set by valy
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -127,6 +138,9 @@ releases:
                   - key: "kubernetes.io/hostname"
                     operator: In
                     values: ["absis", "leviathan", "smicro1"]
+        hostNetwork: true
+        metrics:
+          enables: true
         monitoring:
           enabled: true
         resources:

@@ -11,7 +11,7 @@ internalPort: 9091
 net_admin: true
 image:
   repository: haugene/transmission-openvpn
-  tag: "3.1"
+  tag: "3.7"
   pullPolicy: Always
 readinessProbe:
   exec:
@@ -19,6 +19,16 @@ readinessProbe:
       - /etc/scripts/healthcheck.sh
   initialDelaySeconds: 120
   periodSeconds: 120
+  timeoutSeconds: 30
+startupProbe:
+  exec:
+    command:
+      - /etc/scripts/healthcheck.sh
+  initialDelaySeconds: 20
+  periodSeconds: 15
+  timeoutSeconds: 10
+  failureThreshold: 30
+
 env:
   OPENVPN_PROVIDER: PIA
   OPENVPN_CONFIG: Netherlands
