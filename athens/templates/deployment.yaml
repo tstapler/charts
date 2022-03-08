@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "athens.fullname" . }}
+  labels:
+    app.kubernetes.io/component: athens
+    {{- include "athens.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "athens.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: athens
+        {{- include "athens.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "athens.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        # Log rotate /srv/athens/logs
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3010
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 60
+          volumeMounts:
+            - name: athens-logs
+              mountPath: /srv/athens/logs
+          env:
+            - name: CONFIG_EDN
+              value: |
+                { :fluree {:servers ["http://{{ include "athens.fullname" . }}-fluree-ledger:8090"]} }
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: fluent-bit
+          image: fluent/fluent-bit
+          volumeMounts:
+            - name: athens-logs
+              mountPath: /mnt/log/
+              readOnly: true
+            - name: fluent-bit-config
+              mountPath: /fluent-bit/etc/
+      volumes:
+        - name: athens-logs
+          emptyDir: {}
+        - name: fluent-bit-config
+          configMap:
+            name: "{{ include "athens.fullname" . }}-fluent-bit-sidecar-config"
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

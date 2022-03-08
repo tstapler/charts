@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "athens.fullname" . }}-fluent-bit-sidecar-config
+  labels:
+    {{- include "athens.labels" . | nindent 4 }}
+data:
+  # Configuration files: server, input, filters and output
+  # ======================================================
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+    [INPUT]
+        Name              tail
+        Tag               athens
+        Path              /mnt/log/*.log
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+    [OUTPUT]
+        Name           stdout
+        Match           *

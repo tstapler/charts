@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "athens.fullname" . }}
+  labels:
+    app.kubernetes.io/component: athens
+    {{- include "athens.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/component: athens
+    {{- include "athens.selectorLabels" . | nindent 4 }}
+
