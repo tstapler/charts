@@ -266,7 +266,9 @@ releases:
               secretName: grafana-ingress
           grafana.ini:
             server:
+              root_url: https://grafana.staplerstation.com
               domain: graph.staplerstation.com
+              http_port: 443
           resources:
             limits:
               memory: 1Gi
