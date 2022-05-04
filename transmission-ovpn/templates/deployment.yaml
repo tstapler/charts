@@ -17,6 +17,12 @@ spec:
         app: {{ template "transmission-ovpn.name" . }}
         release: {{ .Release.Name }}
     spec:
+      dnsConfig:
+        # Alpine struggles with high ndots settings
+        # https://github.com/gliderlabs/docker-alpine/issues/539
+        options:
+          - name: ndots
+            value: "1"
       containers:
         - name: {{ .Values.name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
