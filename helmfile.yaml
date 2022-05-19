@@ -171,6 +171,9 @@ releases:
     version: ~1.0
     values:
       - values/sonarr.yaml
+  - name: prowlarr
+    chart: ./prowlarr
+    version: ~0.1.0
   - name: jackett
     chart: ./jackett
     version: ~1.0
