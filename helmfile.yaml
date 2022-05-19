@@ -194,7 +194,7 @@ releases:
       - values/plex_values.yaml
   - name: prometheus
     chart: prometheus-community/kube-prometheus-stack
-    version: ^27.2.1
+    version: ^35.0.3
     values:
       - alertmanager:
           alertmanagerSpec:
