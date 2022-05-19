@@ -109,7 +109,7 @@ releases:
           create: true
   - name: home-assistant
     chart: k8s-at-home/home-assistant
-    version: ~12.0.1
+    version: ~13.1.2
     values:
       - persistence:
           config:
