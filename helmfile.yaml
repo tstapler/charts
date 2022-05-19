@@ -125,11 +125,11 @@ releases:
           login_attempts_threshold: 5
           use_x_forwarded_for: true
           trusted_proxies:
+          - 10.0.0.6
           # Pod CIDR
           - 10.233.64.0/18
           # Node CIDR
-          - 10.0.0.1/24
-        # Ingress set by valy
+          - 10.0.0.0/24
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
