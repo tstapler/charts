@@ -93,8 +93,8 @@ def generate_arguments(era: Era,
     for _ in range(num_randoms):
         nation = random.choice(nations)
         arguments.extend([
-            f"# {nation['name']}", f"- --{difficulty.value}ai",
-            f"- '{nation['id']}'"
+            f"  # {nation['name']}", f"  - --{difficulty.value}ai",
+            f"  - '{nation['id']}'"
         ])
         nations.remove(nation)
 
