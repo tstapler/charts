@@ -215,10 +215,10 @@ releases:
           resources:
             limits:
               cpu: 200m
-              memory: 200Mi
+              memory: 400Mi
             requests:
               cpu: 100m
-              memory: 100Mi
+              memory: 200Mi
         prometheus:
           prometheusSpec:
             securityContext:
@@ -254,10 +254,10 @@ releases:
           resources:
             limits:
               cpu: 200m
-              memory: 50Mi
+              memory: 80Mi
             requests:
               cpu: 100m
-              memory: 30Mi
+              memory: 50Mi
         grafana:
           enabled: true
           defaultDashboardsEnabled: true
