@@ -187,6 +187,16 @@ releases:
     version: ~0.1.0
     values:
       - values/ombi_values.yaml
+  - name: logseq
+    chart: ./logseq
+    version: ~0.1.0
+    values:
+      - resources:
+          requests:
+            memory: 250Mi
+          limits:
+            memory: 250Mi
+      - values/logseq_values.yaml
   - name: solemn-echidna
     chart: ./plex
     version: ~0.3.1
