@@ -260,6 +260,7 @@ releases:
               memory: 30Mi
         grafana:
           enabled: true
+          defaultDashboardsEnabled: true
           ingress:
             enabled: true
             annotations:
@@ -272,7 +273,7 @@ releases:
               secretName: grafana-ingress
           grafana.ini:
             server:
-              root_url: https://grafana.staplerstation.com
+              root_url: https://grafana.staplerstation.com:443
               domain: graph.staplerstation.com
               http_port: 443
           resources:
