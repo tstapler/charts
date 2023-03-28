@@ -23,6 +23,8 @@ repositories:
     url: https://kubernetes-sigs.github.io/descheduler/
   - name: harbor
     url: https://helm.goharbor.io
+  - name: vector
+    url: https://helm.vector.dev
 
 releases:
   - name: cert-manager
@@ -202,6 +204,10 @@ releases:
     version: ~0.3.1
     values:
       - values/plex_values.yaml
+  - name: vector
+    chart: vector/vector
+    version: ~0.1.0
+    namespace: vector
   - name: prometheus
     chart: prometheus-community/kube-prometheus-stack
     version: ^35.0.3
@@ -285,7 +291,6 @@ releases:
             server:
               root_url: https://grafana.staplerstation.com:443
               domain: graph.staplerstation.com
-              http_port: 443
           resources:
             limits:
               memory: 1Gi
