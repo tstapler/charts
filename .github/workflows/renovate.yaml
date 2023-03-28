@@ -3,6 +3,8 @@ on:
   schedule:
     # Run once a week on Friday at 3pm
     - cron: '0 15 * * 5'
+  workflow_dispatch:
+
 jobs:
   renovate:
     runs-on: ubuntu-latest
