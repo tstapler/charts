@@ -1,13 +1,5 @@
 {
-  "extends": [
-    ":dependencyDashboard",
-    ":semanticPrefixFixDepsChoreOthers",
-    ":ignoreModulesAndTests",
-    "group:monorepos",
-    "group:recommended",
-    "replacements:all",
-    "workarounds:all"
-  ],
+  "extends": ["config:base"],
   "username": "renovate-release",
   "gitAuthor": "Tyler's Renovate Bot <tystapler+renovate-bot@gmail.com>",
   "onboarding": false,
