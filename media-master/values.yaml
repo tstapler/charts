@@ -69,7 +69,7 @@ transmission_ovpn:
   net_admin: true
   image:
     repository: haugene/transmission-openvpn
-    tag: 2.6
+    tag: 2.14
     pullPolicy: Always
   env:
     OPENVPN_PROVIDER: PIA
