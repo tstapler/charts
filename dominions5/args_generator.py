@@ -50,10 +50,10 @@ underwater_nations = [
 
 
 def fetch_and_cache_csv(
-    name: str, url: str,
-    cache_length: timedelta = timedelta(days=1)) -> pathlib.Path:
+        name: str, url: str,
+        cache_length: timedelta = timedelta(days=1)) -> pathlib.Path:
     http = urllib3.PoolManager()
-    cached_csv = pathlib.Path("f{name}.csv")
+    cached_csv = pathlib.Path(f"{name}.csv")
     if (not cached_csv.exists() or datetime.now() -
             datetime.fromtimestamp(cached_csv.stat().st_mtime) > cache_length):
         response = http.request('GET', url)
