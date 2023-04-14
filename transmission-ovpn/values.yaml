@@ -11,7 +11,7 @@ internalPort: 9091
 net_admin: true
 image:
   repository: haugene/transmission-openvpn
-  tag: "4.0"
+  tag: "4.3"
   pullPolicy: Always
 readinessProbe:
   exec:
