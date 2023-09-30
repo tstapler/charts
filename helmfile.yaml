@@ -96,6 +96,8 @@ releases:
            requests:
              cpu: 100m
              memory: 400Mi
+          admissionWebhooks:
+            enabled: false
         defaultBackend:
           minAvailable: 0
           resources:
