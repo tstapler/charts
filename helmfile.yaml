@@ -33,7 +33,7 @@ releases:
     namespace: cert-manager
   - name: harbor
     chart: harbor/harbor
-    version: ~1.6.2
+    version: ~1.13.0
     namespace: harbor
     values:
       - expose:
