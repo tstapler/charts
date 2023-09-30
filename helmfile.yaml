@@ -10,7 +10,7 @@ repositories:
   - name: jetstack
     url: https://charts.jetstack.io
   - name: loki
-    url: https://grafana.github.io/loki/charts
+    url: https://grafana.github.io/helm-charts
   - name: itzg
     url: https://itzg.github.io/minecraft-server-charts/
   - name: k8s-at-home
@@ -278,7 +278,7 @@ releases:
               memory: 50Mi
         grafana:
           enabled: true
-          defaultDashboardsEnabled: true
+          defaultDashboardsEnabled: false
           ingress:
             enabled: true
             annotations:
@@ -291,7 +291,7 @@ releases:
               secretName: grafana-ingress
           grafana.ini:
             server:
-              root_url: https://grafana.staplerstation.com:443
+              root_url: https://graph.staplerstation.com:443
               domain: graph.staplerstation.com
           resources:
             limits:
