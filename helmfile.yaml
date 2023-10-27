@@ -212,7 +212,7 @@ releases:
     namespace: vector
   - name: prometheus
     chart: prometheus-community/kube-prometheus-stack
-    version: ^35.0.3
+    version: ^52.0.0
     values:
       - alertmanager:
           alertmanagerSpec:
