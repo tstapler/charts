@@ -1,5 +1,5 @@
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "plex.fullname" . }}
@@ -12,13 +12,16 @@ metadata:
 spec:
   rules:
   {{- range $host := .Values.ingress.hosts }}
-  - host: {{ $host }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "plex.fullname" $ }}
-          servicePort: 32400
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "plex.fullname" $ }}
+                port:
+                  number: 32400
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
