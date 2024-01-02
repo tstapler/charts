@@ -29,7 +29,7 @@ repositories:
 releases:
   - name: cert-manager
     chart: jetstack/cert-manager
-    version: ~0.12.0
+    version: ~1.5.0
     namespace: cert-manager
   - name: harbor
     chart: harbor/harbor
@@ -45,6 +45,8 @@ releases:
             annotations:
               certmanager.k8s.io/cluster-issuer: letsencrypt-prod
               cert-manager.io/cluster-issuer: letsencrypt-prod
+              kubernetes.io/ingress.class: nginx                                                                                                                                                                                                                                                                                                                                                                  │
+              kubernetes.io/ssl-redirect: 'true'
           tls:
             certSource: secret
             secret:
@@ -78,9 +80,11 @@ releases:
           namespace: default
   - name: nginx-ingress
     chart: ingress-nginx/ingress-nginx
-    version: ~3.9.0
+    version: ~4.8
     values:
       - controller:
+          ingressClassResource:
+            default: true
           hostNetwork: true
           dnsPolicy: ClusterFirstWithHostNet
           nodeSelector:
@@ -107,8 +111,6 @@ releases:
             requests:
               cpu: 10m
               memory: 20Mi
-          service:
-            omitClusterIP: true
         rbac:
           create: true
   - name: home-assistant
@@ -283,6 +285,8 @@ releases:
             enabled: true
             annotations:
               cert-manager.io/cluster-issuer: letsencrypt-prod
+              kubernetes.io/ingress.class: nginx                                                                                                                                                                                                                                                                                                                                                                  │
+              kubernetes.io/ssl-redirect: 'true'
             hosts:
               - graph.staplerstation.com
             tls:
