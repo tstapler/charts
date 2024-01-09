@@ -1,6 +1,6 @@
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "plex.fullname" . }}
   labels:
@@ -14,6 +14,7 @@ spec:
     matchLabels:
       app: {{ template "plex.name" . }}
       release: {{ .Release.Name }}
+  serviceName: {{ template "plex.fullname" . }}
   template:
     metadata:
       labels:
@@ -23,6 +24,19 @@ spec:
 {{- if .Values.deployment_pod_spec }}
 {{ toYaml .Values.deployment_pod_spec | indent 6 }}
 {{- end}}
+      initContainers:
+        - name: init-dbrepair
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              curl -Lo /tmp/DBRepair.sh https://raw.githubusercontent.com/tstapler/PlexDBRepair/master/DBRepair.sh
+              chmod +x /tmp/DBRepair.sh
+              /tmp/DBRepair.sh auto exit
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 12 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
