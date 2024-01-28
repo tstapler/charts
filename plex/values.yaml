@@ -26,7 +26,8 @@ plexClaim: claim-something # A plex claim generated from plex.tv
 # The timezone of your server
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 tz: America/Chicago
-
+initContainer:
+  enabled: false
 ingress:
   enabled: true
   hosts:

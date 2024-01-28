@@ -21,9 +21,10 @@ spec:
         app: {{ template "plex.name" . }}
         release: {{ .Release.Name }}
     spec:
-{{- if .Values.deployment_pod_spec }}
+      {{- if .Values.deployment_pod_spec }}
 {{ toYaml .Values.deployment_pod_spec | indent 6 }}
-{{- end}}
+      {{- end}}
+      {{- if .Values.initContainer.enabled }}
       initContainers:
         - name: init-dbrepair
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -37,6 +38,9 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
+      {{- end }}
+      volumes:
+{{ toYaml .Values.volumes | indent 6 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -80,23 +84,25 @@ spec:
             {{- end }}
           # Healthcheck taken from dockerfile
           # https://github.com/plexinc/pms-docker/blob/master/Dockerfile#L57
+          startupProbe:
+            exec:
+              command:
+                - /healthcheck.sh
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 20
           livenessProbe:
             exec:
               command:
                 - /healthcheck.sh
-            initialDelaySeconds: 20
-            periodSeconds: 200
-            timeoutSeconds: 100
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 20
           readinessProbe:
-            httpGet:
-              path: /web/index.html
-              port: 32400
-            initialDelaySeconds: 15
-            timeoutSeconds: 15
-            periodSeconds: 15
-          volumeMounts: 
+            exec:
+              command:
+                - /healthcheck.sh
+            periodSeconds: 5
+            timeoutSeconds: 2
+          volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 12 }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-      volumes:  
-{{ toYaml .Values.volumes | indent 6 }}

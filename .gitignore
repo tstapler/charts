@@ -82,3 +82,4 @@ fabric.properties
 **/__pycache__
 
 **/*.tgz
+.aider*
