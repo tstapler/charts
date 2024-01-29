@@ -33,3 +33,8 @@ A chart for deploying https://github.com/haugene/docker-transmission-openvpn
 | volumeMounts[0].mountPath | string | `"/data"` |  |
 | volumeMounts[0].name | string | `"torrent-downloads"` |  |
 
+| startupProbe.exec.command[0] | string | `"/etc/scripts/healthcheck.sh"` | Command for the startup probe to execute |
+| startupProbe.initialDelaySeconds | int | `20` | Initial delay before the startup probe is initiated |
+| startupProbe.periodSeconds | int | `15` | How often to perform the probe |
+| startupProbe.timeoutSeconds | int | `10` | When the probe times out |
+| startupProbe.failureThreshold | int | `30` | Minimum consecutive failures for the probe to be considered failed |
