@@ -64,7 +64,7 @@ releases:
       - values/harbor_values.yaml
   - name: descheduler
     chart: descheduler/descheduler
-    version: ~0.28.0
+    version: ~0.31.0
     namespace: kube-system
   - name: goldpinger
     chart: stable/goldpinger
