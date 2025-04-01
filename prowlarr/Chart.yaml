@@ -25,5 +25,5 @@ appVersion: "1.16.0"
 # Chart.yaml
 dependencies:
   - name: common
-    version: 3.0.0
+    version: 3.1.0
     repository: https://k8s-at-home.com/charts/
